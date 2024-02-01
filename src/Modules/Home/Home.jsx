@@ -9,7 +9,7 @@ const Home = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [orders, setOrders] = useState(
-    useSelector((state) => state?.rootReducer?.order?.orders) || []
+    useSelector((state) => state?.rootReducer?.order?.orders) || [],
   );
   const [timers, setTimers] = useState({});
   const [orderStages, setOrderStages] = useState([
@@ -38,17 +38,21 @@ const Home = () => {
       const updateTimer = () => {
         const currentTime = new Date();
         const timeDifference = Math.abs(currentTime - creationTime);
-        const minutesDifference = String(Math.floor(timeDifference / (1000 * 60))).padStart(2, '0');
-        const secondsDifference = String(Math.floor((timeDifference / 1000) % 60)).padStart(2, '0');
+        const minutesDifference = String(
+          Math.floor(timeDifference / (1000 * 60)),
+        ).padStart(2, "0");
+        const secondsDifference = String(
+          Math.floor((timeDifference / 1000) % 60),
+        ).padStart(2, "0");
         const secondsCount = Math.floor(timeDifference / 1000);
 
-
-       
         const fixedTimeDifference = Math.abs(currentTime - fixedTime);
-        const fixedMinutesDifference = String(Math.floor(fixedTimeDifference / (1000 * 60))).padStart(2, '0');
-        const fixedSecondsDifference = String(Math.floor((fixedTimeDifference / 1000) % 60)).padStart(2, '0');
-
-
+        const fixedMinutesDifference = String(
+          Math.floor(fixedTimeDifference / (1000 * 60)),
+        ).padStart(2, "0");
+        const fixedSecondsDifference = String(
+          Math.floor((fixedTimeDifference / 1000) % 60),
+        ).padStart(2, "0");
 
         setTimers((prevTimers) => ({
           ...prevTimers,
@@ -56,8 +60,8 @@ const Home = () => {
             minutes: minutesDifference,
             seconds: secondsDifference,
             secondsCount: secondsCount,
-            fixedMinutesDifference : fixedMinutesDifference,
-            fixedSecondsDifference : fixedSecondsDifference
+            fixedMinutesDifference: fixedMinutesDifference,
+            fixedSecondsDifference: fixedSecondsDifference,
           },
         }));
       };
@@ -80,16 +84,15 @@ const Home = () => {
               stage: order.stage + 1,
               creationTime: new Date().toISOString(),
             }
-          : order
+          : order,
       );
     });
     dispatch(updateStage(orderId));
   };
 
-
   const handleDeleteOrder = (id) => {
     dispatch(deleteOrder(id));
-    setOrders((prevOrders) => prevOrders.filter(order => order.id !== id));
+    setOrders((prevOrders) => prevOrders.filter((order) => order.id !== id));
     alert(`Order ${id} Deleted Successfully`);
   };
 
@@ -102,7 +105,7 @@ const Home = () => {
           </div>
           {orderStages?.map((data, dataIndex) => {
             return (
-              <div className="col-lg-3" key={dataIndex}>
+              <div className="col-lg-3 mb-4" key={dataIndex}>
                 <div className={Classes.cardtitle}>
                   <h4>{data?.name}</h4>
                 </div>
@@ -112,7 +115,8 @@ const Home = () => {
                     <div className={`${Classes.cardBox} `} key={index}>
                       <div
                         className={`card ${
-                         order?.stage != 4 && timers[order.id]?.secondsCount > 180
+                          order?.stage != 4 &&
+                          timers[order.id]?.secondsCount > 180
                             ? Classes.delayCardbox
                             : ""
                         }`}
@@ -135,15 +139,16 @@ const Home = () => {
                     </div>
                   ))}
 
-                  {orders
-                  ?.filter((e) => e?.stage === data?.id).length === 0 && <div className={Classes.emptyStages}> Empty Stage</div>}
+                {orders?.filter((e) => e?.stage === data?.id).length === 0 && (
+                  <div className={Classes.emptyStages}> Empty Stage</div>
+                )}
               </div>
             );
           })}
         </div>
 
         <div className="row mt-5">
-        <div className="col-lg-12">
+          <div className="col-lg-12">
             <h2>Main Section</h2>
           </div>
           <div className="col-lg-12">
@@ -158,25 +163,34 @@ const Home = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {
-                    orders?.map((data, index)=>{
-                      return(
-                        <tr>
-                          <td>{data?.id}</td>
-                          <td>{data.stage}</td>
-                          <td>{`${timers[data.id]?.fixedMinutesDifference} min  ${
-                            timers[data.id]?.fixedSecondsDifference
-                          } sec`}</td>
-                          <td>{data?.stage < 3 &&<div className="btn btn-sm btn-primary mx-auto" onClick={()=>handleDeleteOrder(data?.id)}>Cancel</div>}</td>
-                        </tr>
-                      )
-                    })
-                  }
+                  {orders?.map((data, index) => {
+                    return (
+                      <tr>
+                        <td>{data?.id}</td>
+                        <td>{data.stage}</td>
+                        <td>{`${timers[data.id]?.fixedMinutesDifference} min  ${
+                          timers[data.id]?.fixedSecondsDifference
+                        } sec`}</td>
+                        <td>
+                          {data?.stage < 3 && (
+                            <div
+                              className="btn btn-sm btn-primary mx-auto"
+                              onClick={() => handleDeleteOrder(data?.id)}
+                            >
+                              Cancel
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
                 <tfoot className="table-light">
                   <tr className="border-danger">
                     <th>Total Order Delivered</th>
-                    <th colSpan={"2"}>{orders?.filter((e)=>e?.stage === 4)?.length}</th>
+                    <th colSpan={"2"}>
+                      {orders?.filter((e) => e?.stage === 4)?.length}
+                    </th>
                     <th></th>
                   </tr>
                 </tfoot>
